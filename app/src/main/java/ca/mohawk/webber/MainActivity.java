@@ -6,10 +6,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "==MainActivity==";
+    public static final String API_KEY = "f230a5eb";
     /** single instance of current activity **/
     private static Activity currentActivity = null;
 
@@ -30,5 +35,21 @@ public class MainActivity extends AppCompatActivity {
 
     public static Activity getCurrentActivity() {
         return currentActivity;
+    }
+
+    public void searchByAuthor(View view) {
+        DownloadAsyncTask dl = new DownloadAsyncTask();
+        String uri = "http://www.omdbapi.com/?apikey=" + API_KEY + "&s=music";
+        EditText authorEditText = (EditText) findViewById(R.id.searchEditText);
+        String author = authorEditText.getText().toString();
+        if(!author.equals("")) {
+            // uri += author + "&key=" + API_KEY;
+        }
+        Log.d(TAG, "Start download: " + uri);
+        dl.execute(uri);
+    }
+
+    public void searchByTitle(View view) {
+
     }
 }

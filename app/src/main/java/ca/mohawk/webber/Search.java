@@ -2,6 +2,7 @@ package ca.mohawk.webber;
 
 import java.util.ArrayList;
 
-public class BookList extends ArrayList<Book> {
+public class Search {
+    public static ArrayList<Movie> movies = new ArrayList<>();
     private static final long serialVersionUID = 1L;
 }

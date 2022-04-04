@@ -3,7 +3,6 @@ package ca.mohawk.webber;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -61,21 +60,21 @@ public class DownloadAsyncTask extends AsyncTask<String, Void, String> {
      * @param result - do nothing if results == null
      */
     protected void onPostExecute(String result) {
-        BookList bookList = null;
+        Search movieList = null;
         if (result == null) {
             Log.d(TAG, "no results");
         } else {
             Gson gson = new Gson();
-            bookList = gson.fromJson(result, BookList.class);
+            movieList = gson.fromJson(result, Search.class);
         }
         // fetch the current activity so we can lookup the ListView
         Activity currentActivity = MainActivity.getCurrentActivity();
-        ListView lv = currentActivity.findViewById(R.id.list);
-        if (bookList != null) {
+        ListView lv = currentActivity.findViewById(R.id.bottomFrameLayout).findViewById(R.id.list);
+        if (movieList != null) {
             // if we populated fairlist then connect the adapter
-            ArrayAdapter<Book> adapter =
-                    new ArrayAdapter<Book>(currentActivity,
-                            android.R.layout.simple_list_item_1, bookList);
+            MyListView<Movie> adapter =
+                    new MyListView<>(currentActivity,
+                            R.layout.mylist, Search.movies);
             lv.setAdapter(adapter);
         } else {
             // clear the list
@@ -83,3 +82,5 @@ public class DownloadAsyncTask extends AsyncTask<String, Void, String> {
         }
     }
 }
+
+
