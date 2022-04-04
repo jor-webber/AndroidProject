@@ -1,11 +1,19 @@
 package ca.mohawk.webber;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -60,27 +68,29 @@ public class DownloadAsyncTask extends AsyncTask<String, Void, String> {
      * @param result - do nothing if results == null
      */
     protected void onPostExecute(String result) {
-        Search movieList = null;
+        MovieList movieList = null;
         if (result == null) {
             Log.d(TAG, "no results");
         } else {
+            JsonObject jsonObject = JsonParser.parseString(result).getAsJsonObject();
             Gson gson = new Gson();
-            movieList = gson.fromJson(result, Search.class);
+            movieList = gson.fromJson(jsonObject.get("Search"), MovieList.class);
         }
         // fetch the current activity so we can lookup the ListView
         Activity currentActivity = MainActivity.getCurrentActivity();
-        ListView lv = currentActivity.findViewById(R.id.bottomFrameLayout).findViewById(R.id.list);
+        ListView lv = currentActivity.findViewById(R.id.list);
         if (movieList != null) {
             // if we populated fairlist then connect the adapter
-            MyListView<Movie> adapter =
-                    new MyListView<>(currentActivity,
-                            R.layout.mylist, Search.movies);
+            ArrayAdapter<Movie> adapter =
+                    new ArrayAdapter<>(currentActivity,
+                            android.R.layout.simple_list_item_1, movieList);
             lv.setAdapter(adapter);
         } else {
             // clear the list
             lv.setAdapter(null);
         }
     }
+
 }
 
 

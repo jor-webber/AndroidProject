@@ -12,7 +12,7 @@ public class Movie {
     @NonNull
     @Override
     public String toString() {
-        return Title + " " + Year + " " + imdbID + " " + Type;
+        return Title + " (Released " + Year + ")";
     }
 }
 

@@ -6,13 +6,16 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ListView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     public static final String TAG = "==MainActivity==";
     public static final String API_KEY = "f230a5eb";
     /** single instance of current activity **/
@@ -39,17 +42,27 @@ public class MainActivity extends AppCompatActivity {
 
     public void searchByAuthor(View view) {
         DownloadAsyncTask dl = new DownloadAsyncTask();
-        String uri = "http://www.omdbapi.com/?apikey=" + API_KEY + "&s=music";
-        EditText authorEditText = (EditText) findViewById(R.id.searchEditText);
-        String author = authorEditText.getText().toString();
-        if(!author.equals("")) {
-            // uri += author + "&key=" + API_KEY;
+        String uri = "http://www.omdbapi.com/?apikey=" + API_KEY + "&s=";
+        EditText searchEditText = (EditText) findViewById(R.id.searchEditText);
+        String searchTerm = searchEditText.getText().toString();
+        if(!searchTerm.equals("")) {
+            uri += searchTerm;
         }
         Log.d(TAG, "Start download: " + uri);
+
         dl.execute(uri);
+
+        ListView listView = findViewById(R.id.list);
+        listView.setOnItemClickListener(this);
     }
 
-    public void searchByTitle(View view) {
-
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Intent intent = new Intent(MainActivity.getCurrentActivity(), SingleMovieActivity.class);
+        Movie movie =(Movie)adapterView.getItemAtPosition(i);
+        intent.putExtra("title", movie.Title);
+        intent.putExtra("year", movie.Year);
+        intent.putExtra("image", movie.Poster);
+        startActivity(intent);
     }
 }
